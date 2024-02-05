@@ -1,6 +1,6 @@
 {
   "name": "@yuesth/passkey-wallet-stellar",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "main": "index.ts",
   "author": "yuesth",
   "private": false,

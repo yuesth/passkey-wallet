@@ -1,5 +1,11 @@
 # @yth/passkey-wallet-stellar
 
+## 5.0.0
+
+### Major Changes
+
+- add optional on some of callbacks
+
 ## 4.0.0
 
 ### Major Changes

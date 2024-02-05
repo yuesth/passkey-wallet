@@ -80,7 +80,7 @@ class WalletStellar {
     return txResponse
   }
 
-  async createFromExistingPasskey({onAfterRetrieved}:{onAfterRetrieved: (keyPair: Keypair, publicKey: string)=> Promise<void>}){
+  async createFromExistingPasskey({onAfterRetrieved}:{onAfterRetrieved?: (keyPair: Keypair, publicKey: string)=> Promise<void>}){
     const passKeyKaypairs = await this.getPassKeyKeypair()
     const stellarRes = passKeyKaypairs.map(key => this.parseToStellar(key.getPublicKey().toString()))
     const ledgerStellarRes = await Promise.all(stellarRes.map(_key => this.checkOnStellarLedger(_key.publicKey)))
@@ -99,17 +99,17 @@ class WalletStellar {
       const _keypair = Keypair.fromPublicKey(existedRes.account_id)
       this.keyPair = _keypair
       this.finalPublicKey = stellarPubKey
-      await onAfterRetrieved(_keypair, stellarPubKey)
+      await onAfterRetrieved?.(_keypair, stellarPubKey)
     }
   }
   
-  async createFromCreatingPasskey({onAfterCreated}:{onAfterCreated: (keyPair: Keypair, publicKey: string)=> Promise<void>}){
+  async createFromCreatingPasskey({onAfterCreated}:{onAfterCreated?: (keyPair: Keypair, publicKey: string)=> Promise<void>}){
     const createdKeypair = await this.createPassKeyKeypair()
     const createdPublicKey = createdKeypair.getPublicKey().toString()
     const {publicKey, keypair} = this.parseToStellar(createdPublicKey)
     this.keyPair = keypair
     this.finalPublicKey = publicKey
-    await onAfterCreated(keypair, publicKey)
+    await onAfterCreated?.(keypair, publicKey)
   }
 
 }
