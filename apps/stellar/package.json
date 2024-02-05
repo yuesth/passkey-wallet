@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "yuesth",
+  "private": false,
   "license": "MIT",
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts"
