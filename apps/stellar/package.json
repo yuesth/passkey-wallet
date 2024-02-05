@@ -1,5 +1,5 @@
 {
-  "name": "@yth/passkey-wallet-stellar",
+  "name": "@yuesth/passkey-wallet-stellar",
   "version": "2.0.0",
   "main": "index.js",
   "author": "yuesth",
