@@ -91,15 +91,16 @@ class WalletStellar {
       const stellarRes = this.parseToStellar(createdPubKey)
       await this.createAccountStellarLedger(stellarRes.publicKey)
       this.finalPublicKey = stellarRes.publicKey
+      await onAfterRetrieved?.(stellarRes.keypair, stellarRes.publicKey)
     }
     //otherwise, it used from existed public key on stellar ledger
     else{
       const existedRes = ledgerStellarRes.filter(key => key !== 'noExist')[0]
       const stellarPubKey = existedRes.account_id
-      const _keypair = Keypair.fromPublicKey(existedRes.account_id)
-      this.keyPair = _keypair
+      const _keypair = stellarRes.filter(res => res.publicKey === existedRes.account_id)[0]
+      this.keyPair = _keypair?.keypair
       this.finalPublicKey = stellarPubKey
-      await onAfterRetrieved?.(_keypair, stellarPubKey)
+      await onAfterRetrieved?.(_keypair?.keypair as Keypair, stellarPubKey)
     }
   }
   
@@ -107,6 +108,7 @@ class WalletStellar {
     const createdKeypair = await this.createPassKeyKeypair()
     const createdPublicKey = createdKeypair.getPublicKey().toString()
     const {publicKey, keypair} = this.parseToStellar(createdPublicKey)
+    await this.createAccountStellarLedger(publicKey)
     this.keyPair = keypair
     this.finalPublicKey = publicKey
     await onAfterCreated?.(keypair, publicKey)

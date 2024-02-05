@@ -1,5 +1,13 @@
 # @yth/passkey-wallet-stellar
 
+## 6.0.0
+
+### Major Changes
+
+  - fix bugs on biometric package,
+  - create account on ledger when creating key
+  - callback when no exist case from creatingExistingPasskey
+
 ## 5.0.0
 
 ### Major Changes
