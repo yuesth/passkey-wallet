@@ -1,5 +1,11 @@
 # @yth/passkey-wallet-stellar
 
+## 4.0.0
+
+### Major Changes
+
+- add onAfterCreated and onAfterRetrieved callback
+
 ## 3.0.0
 
 ### Major Changes

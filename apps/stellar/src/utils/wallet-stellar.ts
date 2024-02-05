@@ -38,9 +38,9 @@ class WalletStellar {
     return key
   }
 
-  async checkOnStellarLedger(key:string){
+  async checkOnStellarLedger(publicKey:string){
     try{
-      const res = await axios.get(this.env === 'testnet' ? `https://horizon-testnet.stellar.org/accounts/${key}` : '')
+      const res = await axios.get(this.env === 'testnet' ? `https://horizon-testnet.stellar.org/accounts/${publicKey}` : '')
       return res.data
     }catch(error){
       return 'noExist'
@@ -80,7 +80,7 @@ class WalletStellar {
     return txResponse
   }
 
-  async createFromExistingPasskey(){
+  async createFromExistingPasskey({onAfterRetrieved}:{onAfterRetrieved: (keyPair: Keypair, publicKey: string)=> Promise<void>}){
     const passKeyKaypairs = await this.getPassKeyKeypair()
     const stellarRes = passKeyKaypairs.map(key => this.parseToStellar(key.getPublicKey().toString()))
     const ledgerStellarRes = await Promise.all(stellarRes.map(_key => this.checkOnStellarLedger(_key.publicKey)))
@@ -99,15 +99,17 @@ class WalletStellar {
       const _keypair = Keypair.fromPublicKey(existedRes.account_id)
       this.keyPair = _keypair
       this.finalPublicKey = stellarPubKey
+      await onAfterRetrieved(_keypair, stellarPubKey)
     }
   }
   
-  async createFromCreatingPasskey(){
+  async createFromCreatingPasskey({onAfterCreated}:{onAfterCreated: (keyPair: Keypair, publicKey: string)=> Promise<void>}){
     const createdKeypair = await this.createPassKeyKeypair()
     const createdPublicKey = createdKeypair.getPublicKey().toString()
     const {publicKey, keypair} = this.parseToStellar(createdPublicKey)
     this.keyPair = keypair
     this.finalPublicKey = publicKey
+    await onAfterCreated(keypair, publicKey)
   }
 
 }
