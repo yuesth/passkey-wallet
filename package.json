@@ -1,6 +1,7 @@
 {
-  "name": "passkey-wallet",
+  "name": "@yth/passkey-wallet",
   "private": true,
+  "author": "yuesth",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
