@@ -1,81 +1,64 @@
-# Turborepo starter
+# Passkey Wallet API
 
-This is an official starter Turborepo.
+Passkey wallet is API for signing a new wallet key using [https://github.com/near/near-api-js/tree/master/packages/biometric-ed25519](near-js/biometric-ed25519).
+Here is some available chain that we've integrated:
+  1. Stellar - https://github.com/yuesth/passkey-wallet/tree/main/apps/stellar
 
-## Using this example
+In the further, we will integrate more chains.
 
-Run the following command:
-
-```sh
-npx create-turbo@latest
+## Getting Started
+The package is using monorepo pattern to provide more chains. The easiest way to implement this package is installing sub-packages for specific usage, instead of installing whole package.
+### 1. Install the package from NPM registry and use your own package manager.
+#### Yarn
+```
+yarn add @yuesth/passkey-wallet-stellar
 ```
 
-## What's inside?
-
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
+#### Npm
 ```
-cd my-turborepo
-pnpm build
+npm install @yuesth/passkey-wallet-stellar
 ```
 
-### Develop
+### 2. Create instance
+You have to create an instance from the package.
+```jsx
+import PasskeyWallet from '@yuesth/passkey-wallet-stellar'
+...
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
+//the private key must be provided in order to create new wallet on stellar ledger
+const instance = new PasskeyWallet('testnet', <YOUR_PARENT_PRIVATE_KEY>, <RANDOM_PHRASE>, 5)
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### 3. Create key
+After you create an instance, you are able to call `createFromCreatingPasskey()` method to use simplest key creation from biometric passkey.
+```jsx
+...
+const onClickButton = async () => {
+//the private key must be provided in order to create new wallet on stellar ledger
+const instance = new PasskeyWallet('testnet', <YOUR_PARENT_PRIVATE_KEY>, <RANDOM_PHRASE>, 5)
+await wallet.createFromCreatingPasskey()
+}
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
+return(
+  <button onClick={onClickButton}>Create a key</button>
+)
 ```
-npx turbo link
+
+or if you are confident that you already have created a key, then you can call the `createFromExistingPasskey()` method.
+```jsx
+...
+const onClickButton = async () => {
+//the private key must be provided in order to create new wallet on stellar ledger
+const instance = new PasskeyWallet('testnet', <YOUR_PARENT_PRIVATE_KEY>, <RANDOM_PHRASE>, 5)
+await wallet.createFromExistingPasskey()
+}
+
+return(
+  <button onClick={onClickButton}>Get a key</button>
+)
 ```
 
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+## API
+1. `finalPublicKey` --> to retrieve the public key after creating or getting the key.
+2. `keyPair` --> retrieve keyPair creating or getting the key.
+3. `createAccountStellarLedger(childPubKey: string)` --> method for upload the new key to stellar ledger
