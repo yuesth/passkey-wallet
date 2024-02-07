@@ -1,12 +1,12 @@
 {
   "name": "@yuesth/passkey-wallet-stellar",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "main": "index.ts",
   "author": "yuesth",
   "private": false,
   "license": "MIT",
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts"
+    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts"
   },
   "exports": {
     ".": {

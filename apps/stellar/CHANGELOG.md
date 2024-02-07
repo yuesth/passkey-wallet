@@ -1,5 +1,11 @@
 # @yth/passkey-wallet-stellar
 
+## 8.0.0
+
+### Major Changes
+
+- rollback to 6.0.0
+
 ## 7.0.0
 
 ### Major Changes

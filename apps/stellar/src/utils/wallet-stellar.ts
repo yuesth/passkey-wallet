@@ -80,20 +80,7 @@ class WalletStellar {
     return txResponse
   }
 
-  async faucetFriendbot(pubKey:string) {
-    try {
-      const response = await axios.get(
-        `https://friendbot.stellar.org?addr=${encodeURIComponent(
-          pubKey
-        )}`
-      );
-      console.log("SUCCESS! You have a new account :)\n", response.data);
-    } catch (e) {
-      console.error("ERROR!", e);
-    }
-  };
-
-  async createFromExistingPasskey({onAfterRetrieved, useFriendbot = false}:{onAfterRetrieved?: (keyPair: Keypair, publicKey: string,)=> Promise<void>, useFriendbot?: boolean}){
+  async createFromExistingPasskey({onAfterRetrieved}:{onAfterRetrieved?: (keyPair: Keypair, publicKey: string)=> Promise<void>}){
     const passKeyKaypairs = await this.getPassKeyKeypair()
     const stellarRes = passKeyKaypairs.map(key => this.parseToStellar(key.getPublicKey().toString()))
     const ledgerStellarRes = await Promise.all(stellarRes.map(_key => this.checkOnStellarLedger(_key.publicKey)))
@@ -102,8 +89,7 @@ class WalletStellar {
       const createdKeypair = await this.createPassKeyKeypair()
       const createdPubKey = createdKeypair.getPublicKey().toString()
       const stellarRes = this.parseToStellar(createdPubKey)
-      // await this.createAccountStellarLedger(stellarRes.publicKey)
-      useFriendbot ? await this.faucetFriendbot(stellarRes.publicKey) : await this.createAccountStellarLedger(stellarRes.publicKey)
+      await this.createAccountStellarLedger(stellarRes.publicKey)
       this.finalPublicKey = stellarRes.publicKey
       await onAfterRetrieved?.(stellarRes.keypair, stellarRes.publicKey)
     }
@@ -118,12 +104,11 @@ class WalletStellar {
     }
   }
   
-  async createFromCreatingPasskey({onAfterCreated, useFriendbot = false}:{onAfterCreated?: (keyPair: Keypair, publicKey: string)=> Promise<void>, useFriendbot?: boolean}){
+  async createFromCreatingPasskey({onAfterCreated}:{onAfterCreated?: (keyPair: Keypair, publicKey: string)=> Promise<void>}){
     const createdKeypair = await this.createPassKeyKeypair()
     const createdPublicKey = createdKeypair.getPublicKey().toString()
     const {publicKey, keypair} = this.parseToStellar(createdPublicKey)
-    // await this.createAccountStellarLedger(publicKey)
-    useFriendbot ? await this.faucetFriendbot(publicKey) : await this.createAccountStellarLedger(publicKey)
+    await this.createAccountStellarLedger(publicKey)
     this.keyPair = keypair
     this.finalPublicKey = publicKey
     await onAfterCreated?.(keypair, publicKey)
