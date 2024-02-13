@@ -1,5 +1,11 @@
 # @yth/passkey-wallet-stellar
 
+## 9.0.0
+
+### Major Changes
+
+- added phrase args createFromExistingPasskey and createFromCreatingPasskey
+
 ## 8.0.0
 
 ### Major Changes

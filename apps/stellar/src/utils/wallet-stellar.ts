@@ -9,7 +9,7 @@ export type TNetworkEnv = 'mainnet' | 'testnet'
 export interface WalletStellarProps {
   env: TNetworkEnv
   parentSecretKey: string
-  phrase?: string
+  defaultPhrase?: string
   startingBalance?: number
 }
 
@@ -21,20 +21,20 @@ class WalletStellar {
   keyPair?: Keypair
   finalPublicKey: string = ''
 
-  constructor(env: TNetworkEnv, parentSecretKey: string, phrase: string = 'stellar_phrase', startingBalance: number = 5) {
+  constructor(env: TNetworkEnv, parentSecretKey: string, defaultPhrase: string = 'stellar_phrase', startingBalance: number = 5) {
 		this.env = env
 		this.parentSecretKey = parentSecretKey
-    this.phrase = phrase
+    this.phrase = defaultPhrase
     this.startingBalance = `${startingBalance}`
 	}
 
-  async getPassKeyKeypair(){
-    const keys = await getKeys(this.phrase)
+  async getPassKeyKeypair(phrase:string = this.phrase){
+    const keys = await getKeys(phrase)
     return [keys[0], keys[1]]
   }
 
-  async createPassKeyKeypair(){
-    const key = await createKey(this.phrase)
+  async createPassKeyKeypair(phrase:string = this.phrase){
+    const key = await createKey(phrase)
     return key
   }
 
@@ -80,8 +80,8 @@ class WalletStellar {
     return txResponse
   }
 
-  async createFromExistingPasskey({onAfterRetrieved}:{onAfterRetrieved?: (keyPair: Keypair, publicKey: string)=> Promise<void>}){
-    const passKeyKaypairs = await this.getPassKeyKeypair()
+  async createFromExistingPasskey({phrase, onAfterRetrieved}:{phrase?:string, onAfterRetrieved?: (keyPair: Keypair, publicKey: string)=> Promise<void>}){
+    const passKeyKaypairs = await this.getPassKeyKeypair(phrase)
     const stellarRes = passKeyKaypairs.map(key => this.parseToStellar(key.getPublicKey().toString()))
     const ledgerStellarRes = await Promise.all(stellarRes.map(_key => this.checkOnStellarLedger(_key.publicKey)))
     //check if all of stellar publicKey doesn't exist on ledger, it will create passkey publicKey and set the final keypair
@@ -104,8 +104,8 @@ class WalletStellar {
     }
   }
   
-  async createFromCreatingPasskey({onAfterCreated}:{onAfterCreated?: (keyPair: Keypair, publicKey: string)=> Promise<void>}){
-    const createdKeypair = await this.createPassKeyKeypair()
+  async createFromCreatingPasskey({phrase, onAfterCreated}:{phrase?: string ,onAfterCreated?: (keyPair: Keypair, publicKey: string)=> Promise<void>}){
+    const createdKeypair = await this.createPassKeyKeypair(phrase)
     const createdPublicKey = createdKeypair.getPublicKey().toString()
     const {publicKey, keypair} = this.parseToStellar(createdPublicKey)
     await this.createAccountStellarLedger(publicKey)
