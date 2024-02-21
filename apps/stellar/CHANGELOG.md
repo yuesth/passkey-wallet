@@ -1,5 +1,11 @@
 # @yth/passkey-wallet-stellar
 
+## 10.0.0
+
+### Major Changes
+
+- build file
+
 ## 9.0.0
 
 ### Major Changes
