@@ -1,5 +1,11 @@
 # @yth/passkey-wallet-stellar
 
+## 10.1.0
+
+### Minor Changes
+
+- 2017d53: added friendbot funding on create passkey wallet
+
 ## 10.0.0
 
 ### Major Changes
