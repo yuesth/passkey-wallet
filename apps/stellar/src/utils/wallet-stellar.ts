@@ -160,7 +160,9 @@ class WalletStellar {
     const createdKeypair = await this.createPassKeyKeypair(phrase);
     const createdPublicKey = createdKeypair.getPublicKey().toString();
     const { publicKey, keypair } = this.parseToStellar(createdPublicKey);
-    await this.createAccountStellarLedger(publicKey);
+    useFriendbot
+      ? await this.faucetFriendbot(publicKey)
+      : await this.createAccountStellarLedger(publicKey);
     this.keyPair = keypair;
     this.finalPublicKey = publicKey;
     await onAfterCreated?.(keypair, publicKey);
