@@ -1,5 +1,11 @@
 # @yth/passkey-wallet-stellar
 
+## 10.1.2
+
+### Patch Changes
+
+- 7d97a32: frinedbot use on creating passkey
+
 ## 10.1.1
 
 ### Patch Changes
