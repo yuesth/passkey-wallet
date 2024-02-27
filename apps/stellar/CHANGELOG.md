@@ -1,5 +1,11 @@
 # @yth/passkey-wallet-stellar
 
+## 10.1.1
+
+### Patch Changes
+
+- add readme.md
+
 ## 10.1.0
 
 ### Minor Changes
